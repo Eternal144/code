@@ -1,0 +1,20 @@
+class Solution {
+public:
+    
+    bool canPartition(vector<int>& nums) {
+        int sum = accumulate(nums.begin(),nums.end(),0);
+        if(sum%2==1)return false;
+        int target = sum>>1;
+        //vector<bool> dp(target+1,false);
+        bool dp[target+1];
+        memset(dp,0,sizeof(bool)*(target+1));
+        dp[0] = true;
+        for(int i = 1;i < nums.size()+1;++i){
+          //  cout <<"i = "<<i<<endl;
+            for(int j = target;j >=nums[i-1];--j){     
+                dp[j]=dp[j]||dp[j-nums[i-1]];
+            }
+        }
+        return dp[target];
+    }
+};
