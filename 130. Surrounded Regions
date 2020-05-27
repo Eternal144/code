@@ -1,0 +1,72 @@
+class Solution {
+public:
+    //思路把所有的边缘结点都连接到m*n，以大的为根
+    //connect的时候可以不压缩路径，只要在最后一次遍历反转的时候判断它是否在不反转的连通图内时使用find函数找到根节点及最大值看是否为m*n即可
+   vector<int> father;
+    void solve(vector<vector<char>>& board) {
+        int m = board.size();
+        if(m==0)return;
+        int n = board[0].size();
+        if(m==0||n==0)return;
+        father.resize(m*n+1);
+        for(int i = 0;i < m*n+1;i++)father[i]=i;
+         
+          for(int i = 0;i < m;++i){
+            for(int j = 0;j < n;++j){
+                cout <<board[i][j]<<" ";
+            }
+             cout<<endl;
+          }
+        
+        for(int i = 0;i < m;++i){
+            for(int j = 0;j < n;++j){
+                if(board[i][j]=='O'){
+                    int idx= i*n+j;
+                    if(j!=0&&board[i][j-1]!='X')connect(idx,idx-1);
+                    if(i!=0&&board[i-1][j]!='X')connect(idx,idx-n);
+                    if(i!=m-1&&board[i+1][j]!='X')connect(idx,idx+n);
+                    if(j!=n-1&&board[i][j+1]!='X')connect(idx,idx+1);
+                    if(i==0||i==m-1||j==0||j==n-1){
+                       connect(idx,m*n);
+                        father[idx]=m*n;
+                    }
+                }
+//cout<<i<<j<<endl;
+            }
+        }
+ 
+        
+        cout<<endl;
+        for(int i = 0;i < m;++i){
+            for(int j = 0;j < n;++j){
+                cout <<father[i*n+j]<<" ";
+            }
+             cout<<endl;
+          }
+        
+      //  cout<<"t"<<endl;
+         for(int i = 0;i < m;++i){
+            for(int j = 0;j < n;++j){
+                  if(board[i][j]!='X'&&find(i*n+j)!=m*n){
+                      board[i][j]='X';
+                  }
+                // cout<<i<<j<<endl;
+            }
+        }
+        
+        
+    }
+    
+    int find(int x){
+        if(father[x]!=x)father[x]=find(father[x]);
+        return father[x];
+    }
+    void connect(int x,int y){
+        int fx = find(x),fy = find(y);
+        if(fx<fy){
+            father[fx]=fy;
+        }else{
+            father[fy]=fx;
+        }
+    }
+};
