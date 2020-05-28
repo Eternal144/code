@@ -1,0 +1,45 @@
+class Solution {
+public:
+    unordered_map<string,bool> flag[2];
+    queue<string> q[2];
+    unordered_map<int,char> m;
+    int res = 0;
+    int Idx = 1;
+    int minMutation(string start, string end, vector<string>& bank) {
+        if(find(bank.begin(),bank.end(),end)==bank.end())return -1;
+        m[0]='A';
+        m[1]='C';
+        m[2]='G';
+        m[3]='T';
+        int cnt;
+        q[0].push(start);
+        q[1].push(end);
+        flag[0][start]=true;
+        flag[1][end]=true;
+        while(!q[0].empty()||!q[1].empty()){
+            Idx=Idx^1;
+            cnt = q[Idx].size();
+            //cout <<"Idx = "<<Idx;
+            while(cnt--){
+                auto p = q[Idx].front();
+                q[Idx].pop();
+                //为什么要把判断加在这，因为如果放在下面的for循环会漏掉start=end的情况
+                if(flag[Idx^1][p])return res;
+                for(int i = 0;i < 8;++i){
+                    char c = p[i];
+                    for(int j = 0;j < 4;++j){
+                        p[i]=m[j];
+                        //cout <<p<<flag[Idx][p]<<endl;
+                        if(find(bank.begin(),bank.end(),p)!=bank.end()&&!flag[Idx][p]){
+                            flag[Idx][p]=true;
+                            q[Idx].push(p);
+                        }
+                    }
+                    p[i]=c;
+                }
+            }
+            res++;
+        }
+        return -1;
+    }
+};
